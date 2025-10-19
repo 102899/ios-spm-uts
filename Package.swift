@@ -9,38 +9,29 @@ let package = Package(
     products: [
         .library(
             name: "NativeScriptSDK",
-            targets: ["NativeScript"]),
+            targets: ["NativeScriptWrapper"]),
     ],
     dependencies: [],
     targets: [
+        // 保留原始 binary target 作为依赖
+        .binaryTarget(
+            name: "NativeScriptCore",
+            path: "NativeScript.xcframework"
+        ),
+        // 添加 wrapper target 来改善链接行为
         .target(
-            name: "NativeScript",
-            dependencies: [],
-            path: "Sources/NativeScript",
+            name: "NativeScriptWrapper",
+            dependencies: ["NativeScriptCore"],
+            path: "Sources/Wrapper",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include"),
-                .headerSearchPath("include/runtime"),
-                .define("NS_ENABLE_RUNTIME", to: "1"),
-            ],
-            cxxSettings: [
-                .headerSearchPath("include"),
-                .headerSearchPath("include/runtime"),
-                .define("NS_ENABLE_RUNTIME", to: "1"),
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
             ],
             linkerSettings: [
                 .linkedFramework("Foundation"),
                 .linkedFramework("UIKit"),
                 .linkedFramework("JavaScriptCore"),
-                .linkedLibrary("c++"),
-                .linkedLibrary("z"),
-                .linkedLibrary("sqlite3"),
             ]
         )
-    ],
-    cLanguageStandard: .c11,
-    cxxLanguageStandard: .cxx17
+    ]
 )
