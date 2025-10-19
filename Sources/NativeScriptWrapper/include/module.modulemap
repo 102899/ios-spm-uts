@@ -1,0 +1,13 @@
+
+module NativeScriptEmbedder {
+    header "NativeScriptWrapper.h"
+    export *
+    
+    // 明确导出 NativeScript 的符号
+    link "NativeScript"
+    
+    explicit module NativeScript {
+        header "NativeScript.h"
+        export *
+    }
+}
