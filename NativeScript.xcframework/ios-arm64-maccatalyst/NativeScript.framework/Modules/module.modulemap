@@ -1,5 +1,0 @@
-framework module NativeScriptEmbedder {
-  umbrella header "NativeScript.h"
-  export *
-  module * { export * }
-}
