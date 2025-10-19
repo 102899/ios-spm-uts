@@ -24,13 +24,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "NativeScriptSDK",
+    name: "NativeScriptEmbedder",
     platforms: [
         .iOS(.v13)
     ],
     products: [
         .library(
-            name: "NativeScriptSDK",
+            name: "NativeScriptEmbedder",
             targets: ["NativeScript"]),
     ],
     dependencies: [],
