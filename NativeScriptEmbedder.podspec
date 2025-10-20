@@ -32,7 +32,7 @@ Pod::Spec.new do |spec|
                       }
 
   spec.author       = { "NativeScript Team" => "support@nativescript.org" }
-  spec.source       = { :path => "." }
+  spec.source       = { :git => "https://github.com/102899/ios-spm-uts.git", :branch => "cocoapods-support" }
 
   spec.platform     = :ios, "13.0"
   spec.ios.deployment_target = "13.0"
