@@ -52,13 +52,15 @@ Pod::Spec.new do |spec|
   # 确保支持 Swift
   spec.swift_version = "5.0"
   
-  # 如果有头文件需要暴露，可以使用这个配置
-  # spec.public_header_files = "Sources/**/*.h"
-  # spec.source_files = "Sources/**/*.{h,m,swift}"
+  # 暴露 NativeScript 框架的头文件
+  spec.public_header_files = "NativeScript.xcframework/*/NativeScript.framework/Headers/*.h", "Sources/NativeScriptEmbedder/*.h"
   
   # 由于我们使用的是预编译的 xcframework，不需要源文件
   # 但是为了让 CocoaPods 正确识别，我们可以添加一个空的源文件
   spec.source_files = "Sources/NativeScriptEmbedder/*.{h,m,swift}"
+  
+  # 设置模块映射文件
+  spec.module_map = "Sources/NativeScriptEmbedder/module.modulemap"
   
   # 确保 xcframework 中的所有架构都被支持
   spec.pod_target_xcconfig = {

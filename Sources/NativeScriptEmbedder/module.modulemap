@@ -1,0 +1,8 @@
+framework module NativeScriptEmbedder {
+    umbrella header "NativeScriptEmbedder-Bridging-Header.h"
+    
+    export *
+    module * { export * }
+    
+    link framework "NativeScript"
+}
