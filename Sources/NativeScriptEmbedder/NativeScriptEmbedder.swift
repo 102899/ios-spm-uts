@@ -34,18 +34,15 @@ import UIKit
     // MARK: - Objective-C 兼容方法
     
     /// Objective-C 兼容的单例访问方法
+    /// JavaScript 代码通过 NativeScriptEmbedder.sharedInstance() 访问
     @objc public static func sharedInstance() -> NativeScriptEmbedder {
         return shared
     }
     
     /// Objective-C 兼容的 delegate 设置方法
     /// 使用不同的方法名避免与属性的 setter 冲突
+    /// Swift 代码可以调用此方法：NativeScriptEmbedder.sharedInstance().assignDelegate(delegate)
     @objc public func assignDelegate(_ delegate: NativeScriptEmbedderDelegate?) {
-        self.delegate = delegate
-    }
-    
-    /// 为了保持向后兼容，提供一个使用自定义 selector 的方法
-    @objc(setDelegate:) public func setDelegateCompat(_ delegate: NativeScriptEmbedderDelegate?) {
         self.delegate = delegate
     }
     
