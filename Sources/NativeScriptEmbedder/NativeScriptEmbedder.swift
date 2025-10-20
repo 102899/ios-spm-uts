@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import DCloudUTSFoundation
 
 // This file is required by CocoaPods to recognize the module
 // The actual NativeScript functionality is provided by the NativeScript.xcframework
@@ -46,16 +45,16 @@ import DCloudUTSFoundation
     
     // MARK: - NativeScriptEmbedderDelegate
     @objc public func presentNativeScriptApp(_ viewController: UIViewController!) -> Any! {
-        console.log("NativeScriptEmbedder: presentNativeScriptApp 被调用")
+        NSLog("NativeScriptEmbedder: presentNativeScriptApp 被调用")
         
         guard let vc = viewController else {
-            console.log("NativeScriptEmbedder: viewController 为 nil")
+            NSLog("NativeScriptEmbedder: viewController 为 nil")
             return nil
         }
         
         // 设置背景色
         vc.view.backgroundColor = UIColor.white
-        console.log("NativeScriptEmbedder: 设置 viewController 背景色")
+        NSLog("NativeScriptEmbedder: 设置 viewController 背景色")
         
         // 获取当前的根视图控制器
         DispatchQueue.main.async {
@@ -63,14 +62,14 @@ import DCloudUTSFoundation
                let window = windowScene.windows.first,
                let rootViewController = window.rootViewController {
                 
-                console.log("NativeScriptEmbedder: 准备显示 NativeScript 应用")
+                NSLog("NativeScriptEmbedder: 准备显示 NativeScript 应用")
                 
                 // 以模态方式显示 NativeScript 应用
                 rootViewController.present(vc, animated: true) {
-                    console.log("NativeScriptEmbedder: NativeScript 应用显示完成")
+                    NSLog("NativeScriptEmbedder: NativeScript 应用显示完成")
                 }
             } else {
-                console.log("NativeScriptEmbedder: 无法获取根视图控制器")
+                NSLog("NativeScriptEmbedder: 无法获取根视图控制器")
             }
         }
         
