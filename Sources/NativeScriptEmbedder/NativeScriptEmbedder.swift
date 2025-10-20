@@ -12,6 +12,52 @@ import UIKit
 // This file is required by CocoaPods to recognize the module
 // The actual NativeScript functionality is provided by the NativeScript.xcframework
 
+// MARK: - 日志发送服务
+@objc public class DebugLogger: NSObject {
+    @objc public static let shared = DebugLogger()
+    private let serverURL = "http://192.168.1.102:3000/log"
+    
+    private override init() {
+        super.init()
+    }
+    
+    @objc public func sendLog(_ message: String, level: String = "info", source: String = "NativeScriptEmbedder") {
+        let logData: [String: Any] = [
+            "timestamp": ISO8601DateFormatter().string(from: Date()),
+            "level": level,
+            "source": source,
+            "message": message,
+            "platform": "iOS",
+            "device": UIDevice.current.model
+        ]
+        
+        sendLogToServer(logData)
+        
+        // 同时输出到本地日志
+        NSLog("[\(source)] \(message)")
+    }
+    
+    private func sendLogToServer(_ logData: [String: Any]) {
+        guard let url = URL(string: serverURL) else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: logData)
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    NSLog("日志发送失败: \(error.localizedDescription)")
+                }
+            }.resume()
+        } catch {
+            NSLog("日志序列化失败: \(error.localizedDescription)")
+        }
+    }
+}
+
 @objc public protocol NativeScriptEmbedderDelegate: NSObjectProtocol {
     @objc func presentNativeScriptApp(_ viewController: UIViewController!) -> Any!
     @objc optional func embedNativeScriptView(_ viewController: UIViewController!) -> UIViewController!
@@ -94,6 +140,9 @@ import UIKit
         super.init()
         // 设置自己为默认 delegate
         self.delegate = self
+        
+        // 发送初始化日志
+        DebugLogger.shared.sendLog("NativeScriptEmbedder 初始化完成", level: "info", source: "NativeScriptEmbedder.init")
     }
     
     @objc public var version: String {
@@ -119,28 +168,37 @@ import UIKit
     
     /// 创建嵌入式 NativeScript 容器视图控制器
     @objc public func createEmbeddedViewController() -> NativeScriptContainerViewController {
+        DebugLogger.shared.sendLog("开始创建嵌入式视图控制器", level: "info", source: "NativeScriptEmbedder.createEmbeddedViewController")
         NSLog("NativeScriptEmbedder: 创建嵌入式视图控制器")
         let containerVC = NativeScriptContainerViewController()
         containerVC.title = "NativeScript"
+        DebugLogger.shared.sendLog("嵌入式视图控制器创建完成", level: "info", source: "NativeScriptEmbedder.createEmbeddedViewController")
         return containerVC
     }
     
     /// 嵌入 NativeScript 视图到指定的容器中
     @objc public func embedNativeScriptView(_ viewController: UIViewController!, in containerVC: NativeScriptContainerViewController) {
+        DebugLogger.shared.sendLog("开始嵌入 NativeScript 视图", level: "info", source: "NativeScriptEmbedder.embedNativeScriptView")
         NSLog("NativeScriptEmbedder: 嵌入 NativeScript 视图")
         
         guard let vc = viewController else {
+            DebugLogger.shared.sendLog("viewController 为 nil，嵌入失败", level: "error", source: "NativeScriptEmbedder.embedNativeScriptView")
             NSLog("NativeScriptEmbedder: viewController 为 nil")
             return
         }
         
+        DebugLogger.shared.sendLog("viewController 有效，开始设置视图", level: "info", source: "NativeScriptEmbedder.embedNativeScriptView")
+        
         // 设置背景色
         vc.view.backgroundColor = UIColor.white
         NSLog("NativeScriptEmbedder: 设置 viewController 背景色")
+        DebugLogger.shared.sendLog("设置 viewController 背景色完成", level: "info", source: "NativeScriptEmbedder.embedNativeScriptView")
         
         // 嵌入到容器中
         DispatchQueue.main.async {
+            DebugLogger.shared.sendLog("在主线程中嵌入视图", level: "info", source: "NativeScriptEmbedder.embedNativeScriptView")
             containerVC.embedNativeScript(vc)
+            DebugLogger.shared.sendLog("视图嵌入完成", level: "info", source: "NativeScriptEmbedder.embedNativeScriptView")
         }
     }
     
