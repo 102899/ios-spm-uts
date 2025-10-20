@@ -39,7 +39,13 @@ import UIKit
     }
     
     /// Objective-C 兼容的 delegate 设置方法
-    @objc public func setDelegate(_ delegate: NativeScriptEmbedderDelegate?) {
+    /// 使用不同的方法名避免与属性的 setter 冲突
+    @objc public func assignDelegate(_ delegate: NativeScriptEmbedderDelegate?) {
+        self.delegate = delegate
+    }
+    
+    /// 为了保持向后兼容，提供一个使用自定义 selector 的方法
+    @objc(setDelegate:) public func setDelegateCompat(_ delegate: NativeScriptEmbedderDelegate?) {
         self.delegate = delegate
     }
     
